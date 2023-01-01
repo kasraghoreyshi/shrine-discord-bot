@@ -2,7 +2,7 @@
 
 ## Steps to run
 
-First, clone the repostiory. then:
+First, clone the repository. then:
 
 `cd shrine-discord-bot`
 `npm install`
