@@ -113,24 +113,26 @@ const main = async () => {
     if (interaction.commandName === "my-perks") {
       const perks = await getUserPerks(interaction.user.id);
       if (perks.length) {
-        const exampleEmbed = new EmbedBuilder()
-          .setThumbnail(interaction.user.avatarURL())
-          .setColor(0x0099ff)
-          .setTitle(`${interaction.user.username}'s list of perks`)
-          .setDescription(
-            "I will remind you when any of these perks appear on the Shrine Of Secrets."
-          )
-          .addFields(
-            perks.map((perk, index) => ({
-              name: perk.name,
-              value: replacePerkDescriptionWithtunables(
-                NodeHtmlMarkdown.translate(perk.description),
-                perk.tunables as string[][]
+        await interaction.reply({
+          embeds: [
+            new EmbedBuilder()
+              .setThumbnail(interaction.user.avatarURL())
+              .setColor(0x0099ff)
+              .setTitle(`${interaction.user.username}'s list of perks`)
+              .setDescription(
+                "I will remind you when any of these perks appear on the Shrine Of Secrets."
+              )
+              .addFields(
+                perks.map((perk, index) => ({
+                  name: perk.name,
+                  value: replacePerkDescriptionWithtunables(
+                    NodeHtmlMarkdown.translate(perk.description),
+                    perk.tunables as string[][]
+                  ),
+                }))
               ),
-            }))
-          );
-
-        await interaction.reply({ embeds: [exampleEmbed] });
+          ],
+        });
       } else
         await interaction.reply(
           'No perk found. Try using the "/add-perk" command to add one.'
