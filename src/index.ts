@@ -19,21 +19,21 @@ const main = async () => {
   const perkNotFoundError =
     "Perk not found. Please use the available autocomplete and avoid typing the names yourself.";
 
-  const apiPerks = await getPerks();
+  await upsertPerks(await getPerks());
 
-  await upsertPerks(apiPerks);
+  let shrine = await upsertShrine(await getCurrentShrine());
 
-  const apiShrine = await getCurrentShrine();
-
-  const shrine = await upsertShrine(apiShrine);
-
-  const perks = await prisma.perk.findMany();
+  let perks = await prisma.perk.findMany();
 
   await registerSlashCommands(perks);
 
   // Every day at midnight
 
   schedule("0 0 * * *", async () => {
+    shrine = await upsertShrine(await getCurrentShrine());
+    await upsertPerks(await getPerks());
+    perks = await prisma.perk.findMany();
+
     const reminders = await remindUsers(shrine);
     for (const reminder of reminders) {
       try {
