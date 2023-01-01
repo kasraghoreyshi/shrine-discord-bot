@@ -11,10 +11,12 @@ datasource db {
 }
 
 model User {
-  id        Int    @id @default(autoincrement())
-  discordId String @unique
-  username  String @unique
-  perks     Perk[]
+  id                 Int     @id @default(autoincrement())
+  discordId          String  @unique
+  username           String  @unique
+  perks              Perk[]
+  lastRemindedShrine Shrine? @relation(fields: [shrineId], references: [id])
+  shrineId           Int?
 }
 
 model Perk {
@@ -29,10 +31,10 @@ model Perk {
 }
 
 model Shrine {
-  id       Int      @id @default(autoincrement())
-  apiId    Int      @unique
-  perks    Perk[]
-  start    DateTime
-  end      DateTime
-  reminded Boolean?
+  id            Int      @id @default(autoincrement())
+  apiId         Int      @unique
+  perks         Perk[]
+  start         DateTime
+  end           DateTime
+  remindedUsers User[]
 }

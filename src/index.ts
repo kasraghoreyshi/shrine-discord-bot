@@ -6,6 +6,7 @@ import { schedule } from "node-cron";
 import { NodeHtmlMarkdown } from "node-html-markdown";
 import { prisma } from "./db";
 import { getCurrentShrine, getPerks } from "./helpers/api";
+import { CronExpression } from "./helpers/common-crons";
 import { remindUsers } from "./helpers/remind-users";
 import { replacePerkDescriptionWithtunables } from "./helpers/replace-perk-description-with-tunables";
 import { upsertPerks } from "./models/perk/upsert";
@@ -29,7 +30,7 @@ const main = async () => {
 
   // Every day at midnight
 
-  schedule("0 0 * * *", async () => {
+  schedule(CronExpression.EVERY_10_SECONDS, async () => {
     shrine = await upsertShrine(await getCurrentShrine());
     await upsertPerks(await getPerks());
     perks = await prisma.perk.findMany();
@@ -38,7 +39,7 @@ const main = async () => {
     for (const reminder of reminders) {
       try {
         const user = await client.users.fetch(reminder.userDiscordId);
-        user.send(reminder.message);
+        await user.send(reminder.message);
       } catch (e) {}
     }
   });
